@@ -80,3 +80,7 @@ n_link_sim/forwardModels/DoubleLinkForwardModel_wrap.c
 n_link_sim/dist
 n_link_sim/build
 n_link_sim/N_Link_Simulator.egg-info
+
+models/
+
+*.npy
