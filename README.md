@@ -1,7 +1,6 @@
 # Recurrent Kalman Networks
 
-This is a new, cleaned up version of the Code used for the experiments described in the paper. We highly recommend you use this version, however, you can find the old version in the branch "icml_submission". 
-
+This is a fork of the original RKN repo at [LCAS](https://github.com/LCAS)/[RKN](https://github.com/LCAS/RKN) for testing its application to Motion Prediction and other areas. Please refer to the original repo for the ICML results
 
 ## Code
 
@@ -27,13 +26,14 @@ Currently Implemented:
   - Pendulum Image Imputation (Implemented and verified that the ICML results are reproduced)
   - Quad Link State Estimation (Implemented)
   - Quad Link Image Imputation (Implemented)
+  - Skeleton Motion Prediction (Implemented)
 
 
 ## Dependencies
 
 Tested with:
   - python 3.6
-  - tensorflow 1.13.1 (both with and without GPU)
+  - tensorflow 2.6.0 (with GPU)
   - numpy 1.16
   - pillow 5.1.0 (only needed for data generation)
 
