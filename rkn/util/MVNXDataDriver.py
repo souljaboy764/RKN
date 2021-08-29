@@ -7,6 +7,16 @@ import os
 import numpy as np
 from klepto.archives import file_archive
 
+def generate_motion_prediction_set(root_dir, seq_length):
+	DATA_PARAMS = {}
+	DATA_PARAMS.update({"data_source": "MVNX", "nb_frames":seq_length, 'as_3D': True, 'data_types': ['position'],"unit_bounds": False, "path":root_dir})
+	data_driver = MVNXDataDriver(DATA_PARAMS)
+	data_driver.parse(frameMod=True)
+	shape = data_driver.data.shape
+	data = data_driver.data.reshape(-1, shape[-2], shape[-1])
+	return data[:, :-1, :], data[:, 1:, :]
+
+
 # Adapted from https://github.com/inria-larsen/activity-recognition-prediction-wearable/tree/master/VTSFE/data/7x10_actions
 class MVNXDataDriver():
 
