@@ -53,6 +53,8 @@ class MVNXMotionPredictionRKN(RKN):
 		return [
 			# 1: Dense Layer (Input to hidden)
 			k.layers.Dense(args.hidden_dim, activation=k.activations.relu),
+			k.layers.Dense(args.hidden_dim, activation=k.activations.relu),
+
 			# 2: Dense Layer (hidden to latent)
 			k.layers.Dense(2*self._lod, activation=k.activations.relu)
 		]
@@ -61,6 +63,8 @@ class MVNXMotionPredictionRKN(RKN):
 		return [
 			# 1: Dense Layer (latent to hidden)
 			k.layers.Dense(args.hidden_dim, activation=k.activations.relu),
+			k.layers.Dense(args.hidden_dim, activation=k.activations.relu),
+			
 			# 2: Dense Layer (hidden to Input)
 			k.layers.Dense(self._output_dim, activation=k.activations.relu)
 		]

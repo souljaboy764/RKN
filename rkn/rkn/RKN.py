@@ -7,7 +7,7 @@ from rkn.RKNTransitionCell import RKNTransitionCell, pack_input, unpack_state
 class RKN(k.models.Model):
 
     def __init__(self, observation_shape, latent_observation_dim, output_dim, num_basis, bandwidth,
-                 trans_net_hidden_units=[], never_invalid=False, cell_type="rkn"):
+                 trans_net_hidden_units=[], never_invalid=False, cell_type="rkn", batch_size=None):
         """
         :param observation_shape: shape of the observation to work with
         :param latent_observation_dim: latent observation dimension (m in paper)
@@ -18,6 +18,7 @@ class RKN(k.models.Model):
         :param never_invalid: if you know a-priori that the observation valid flag will always be positive you can set
                               this to true for slightly increased performance (obs_valid mask will be ignored)
         :param cell_type: type of cell to use "rkn" for our approach, "lstm" or "gru" for baselines
+        :param batch_size: For stateful RNNs, batch size needs to be fixed.
         """
         super().__init__()
 
@@ -57,7 +58,7 @@ class RKN(k.models.Model):
         else:
             raise AssertionError("Invalid Cell type, needs tp be 'rkn', 'lstm' or 'gru'")
 
-        self._layer_rkn = k.layers.RNN(self._cell, return_sequences=True)
+        self._layer_rkn = k.layers.RNN(self._cell, return_sequences=True, stateful = batch_size is not None)
 
         self._dec_hidden = self._time_distribute_layers(self.build_decoder_hidden())
         if self._ld_output:
@@ -78,16 +79,22 @@ class RKN(k.models.Model):
         if isinstance(observation_shape, list):
             in_shape = [None] + observation_shape
         elif isinstance(observation_shape, tuple):
-            in_shape = (None, ) + observation_shape
+            in_shape = list((None, ) + observation_shape)
         elif np.isscalar(observation_shape):
             in_shape = [None, observation_shape]
         else:
             raise AssertionError("observation shape needs to be either list, tuple or scalar")
-        inputs = k.layers.Input(shape=in_shape)
+        if batch_size is None:
+            inputs = k.layers.Input(shape=in_shape)
+        else:
+            inputs = k.layers.Input(batch_shape = [batch_size] + in_shape)
         if self._never_invalid:
             self(inputs)
         else:
-            obs_val = k.layers.Input(shape=(None, 1))
+            if batch_size is None:
+                obs_val = k.layers.Input(shape=(None, 1))
+            else:
+                obs_val = k.layers.Input(batch_shape = (batch_size, None, 1))
             self((inputs, obs_val))
 
     def build_encoder_hidden(self):
