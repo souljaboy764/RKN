@@ -396,11 +396,7 @@ class RKNTransitionCell(k.layers.Layer):
                         "never_invalid" : self._never_invalid,
                         "debug" : self._debug,
                         "trans_net_hidden_units" : self._trans_net_hidden_units,
-                        "initial_trans_covar" : self._initial_trans_covar,
-                        # "basis_matrices" : self._basis_matrices,
-                        # "coefficient_net" : self._coefficient_net,
-                        # "trans_covar_upper" : self._trans_covar_upper,
-                        # "trans_covar_lower" : self._trans_covar_lower
+                        "initial_trans_covar" : self._initial_trans_covar
                     })
         return config
 

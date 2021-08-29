@@ -154,30 +154,36 @@ class RKN(k.models.Model):
             return pred_mean
 
     # loss functions
-    def gaussian_nll(self, target, pred_mean_var):
+
+    @staticmethod
+    def gaussian_nll(target, pred_mean_var):
         """
         gaussian nll
         :param target: ground truth positions
         :param pred_mean_var: mean and covar (as concatenated vector, as provided by model)
         :return: gaussian negative log-likelihood
         """
-        pred_mean, pred_var = pred_mean_var[..., :self._output_dim], pred_mean_var[..., self._output_dim:]
+        pred_dim = pred_mean_var.shape[-1]//2
+        pred_mean, pred_var = pred_mean_var[..., :pred_dim], pred_mean_var[..., pred_dim:]
         pred_var += 1e-8
         element_wise_nll = 0.5 * (np.log(2 * np.pi) + tf.math.log(pred_var) + ((target - pred_mean)**2) / pred_var)
         sample_wise_error = tf.reduce_sum(element_wise_nll, axis=-1)
         return tf.reduce_sum(sample_wise_error)
 
-    def rmse(self, target, pred_mean_var):
+    @staticmethod
+    def rmse(target, pred_mean_var):
         """
         root mean squared error
         :param target: ground truth positions
         :param pred_mean_var: mean and covar (as concatenated vector, as provided by model)
         :return: root mean squared error between targets and predicted mean, predicted variance is ignored
         """
-        pred_mean = pred_mean_var[..., :self._output_dim]
+        pred_dim = pred_mean_var.shape[-1]//2
+        pred_mean = pred_mean_var[..., :pred_dim]
         return tf.sqrt(tf.reduce_sum((pred_mean - target) ** 2))
 
-    def bernoulli_nll(self, targets, predictions, uint8_targets=False):
+    @staticmethod
+    def bernoulli_nll(targets, predictions, uint8_targets=False):
         """ Computes Binary Cross Entropy
         :param targets:
         :param predictions:

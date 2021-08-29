@@ -16,7 +16,7 @@ class MVNXMotionPredictionRKN(RKN):
 			k.layers.Dense(self._hidden_dim, activation=k.activations.relu),
 			k.layers.Dense(self._hidden_dim, activation=k.activations.relu),
 			# 2: Dense Layer (hidden to latent)
-			k.layers.Dense(2*self._lod, activation=k.activations.relu)
+			k.layers.Dense(self._lsd, activation=k.activations.relu)
 		]
 
 	def build_decoder_hidden(self):
