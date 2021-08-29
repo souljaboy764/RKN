@@ -180,7 +180,8 @@ class RKNTransitionCell(k.layers.Layer):
                  trans_net_hidden_units=[],
                  initial_trans_covar=0.1,
                  never_invalid=False,
-                 debug=False):
+                 debug=False,
+                 **kwargs):
 
         """
         :param latent_state_dim: dimensionality of latent state (n in paper)
@@ -385,3 +386,24 @@ class RKNTransitionCell(k.layers.Layer):
     def state_size(self):
         """ required by k.layers.RNN"""
         return 5 * self._lod
+
+    def get_config(self):
+        config = super(RKNTransitionCell, self).get_config()
+        config.update({ "latent_state_dim" : self._lsd,
+                        "latent_obs_dim" : self._lod,
+                        "number_of_basis" : self._num_basis,
+                        "bandwidth" : self._bandwidth,
+                        "never_invalid" : self._never_invalid,
+                        "debug" : self._debug,
+                        "trans_net_hidden_units" : self._trans_net_hidden_units,
+                        "initial_trans_covar" : self._initial_trans_covar,
+                        # "basis_matrices" : self._basis_matrices,
+                        # "coefficient_net" : self._coefficient_net,
+                        # "trans_covar_upper" : self._trans_covar_upper,
+                        # "trans_covar_lower" : self._trans_covar_lower
+                    })
+        return config
+
+    @classmethod
+    def from_config(cls, config):
+        return cls(**config)
