@@ -158,7 +158,7 @@ class RKN(k.models.Model):
         pred_var += 1e-8
         element_wise_nll = 0.5 * (np.log(2 * np.pi) + tf.math.log(pred_var) + ((target - pred_mean)**2) / pred_var)
         sample_wise_error = tf.reduce_sum(element_wise_nll, axis=-1)
-        return tf.reduce_mean(sample_wise_error)
+        return tf.reduce_sum(sample_wise_error)
 
     def rmse(self, target, pred_mean_var):
         """
@@ -168,7 +168,7 @@ class RKN(k.models.Model):
         :return: root mean squared error between targets and predicted mean, predicted variance is ignored
         """
         pred_mean = pred_mean_var[..., :self._output_dim]
-        return tf.sqrt(tf.reduce_mean((pred_mean - target) ** 2))
+        return tf.sqrt(tf.reduce_sum((pred_mean - target) ** 2))
 
     def bernoulli_nll(self, targets, predictions, uint8_targets=False):
         """ Computes Binary Cross Entropy
